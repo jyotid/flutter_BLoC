@@ -8,19 +8,18 @@ import 'login_screen.dart';
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AuthBLoC bloc =  AuthBLoC();
-    return AuthBLoCProvider(
-      bloc: bloc,
-      child: getScreen(bloc)
+    return StreamBuilder<String>(
+        stream: AuthBLoCProvider
+            .get(context)
+            .authTokenStream,
+        builder: (context, snapshot) {
+          final location = snapshot.data;
+          if (location == null || location.isEmpty) {
+            return LoginScreen();
+          }
+
+          return UserInfoScreen();
+        }
     );
   }
-
-  Widget getScreen(AuthBLoC authBLoC){
-    if(!authBLoC.getToken().isEmpty){
-      return LoginScreen();
-    }else{
-      return UserInfoScreen();
-    }
   }
-
-}

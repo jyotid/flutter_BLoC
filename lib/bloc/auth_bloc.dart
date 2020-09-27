@@ -1,9 +1,21 @@
+
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 
 class AuthBLoC {
-  String authToken ="RKEJG";
+  String authToken ="";
+  // ignore: close_sinks
+  final _authTokenController = StreamController<String>();
+
+  Stream<String> get authTokenStream => _authTokenController.stream;
 
   String getToken() => authToken;
+
+  void setToken(String token){
+    this.authToken = token;
+    _authTokenController.sink.add(token);
+  }
 
   void dispose(){
   }
@@ -14,7 +26,10 @@ class AuthBLoCProvider extends StatefulWidget{
 
   const AuthBLoCProvider({Key key, this.child, this.bloc}) : super(key: key);
 
-  AuthBLoC get() => bloc;
+  static AuthBLoC get(BuildContext context) {
+    final AuthBLoCProvider provider = context.findAncestorWidgetOfExactType<AuthBLoCProvider>();
+    return provider.bloc;
+  }
 
   @override
   State<StatefulWidget> createState() => _AuthBLoCState();
